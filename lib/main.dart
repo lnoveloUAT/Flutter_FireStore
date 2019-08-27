@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Models/Tenant.dart';
+import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 void main() => runApp(MyApp());
 
@@ -60,6 +62,45 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               onSaved: (val) => setState(() => _user.firstName = val),
             ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Make / Model'),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter the tenant\'s make and model';
+                }
+              },
+              onSaved: (val) => setState(() => _user.firstName = val),
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'License Plate'),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter the tenant\'s license plate';
+                }
+              },
+              onSaved: (val) => setState(() => _user.firstName = val),
+            ),
+            Text('Fee Paid Through (${format.pattern})'),
+            DateTimeField(
+              format: 'MM/DD/YYYY',
+              onShowPicker: (context, currentValue) async {
+                final date = await showDatePicker(
+                    context: context,
+                    firstDate: DateTime(1900),
+                    initialDate: currentValue ?? DateTime.now(),
+                    lastDate: DateTime(2100));
+                if (date != null) {
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime:
+                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                  );
+                  return DateTimeField.combine(date, time);
+                } else {
+                  return currentValue;
+                }
+              },
+            ),
             Container(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -87,5 +128,25 @@ class _MyHomePageState extends State<MyHomePage> {
         content: Text('Submitting form'),
       ),
     );
+  }
+}
+
+class BasicDateField extends StatelessWidget {
+  final format = DateFormat("yyyy-MM-dd");
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: <Widget>[
+      Text('Basic date field (${format.pattern})'),
+      DateTimeField(
+        format: format,
+        onShowPicker: (context, currentValue) {
+          return showDatePicker(
+              context: context,
+              firstDate: DateTime(1900),
+              initialDate: currentValue ?? DateTime.now(),
+              lastDate: DateTime(2100));
+        },
+      ),
+    ]);
   }
 }
