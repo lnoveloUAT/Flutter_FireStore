@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Models/Tenant.dart';
-import 'package:intl/intl.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+// import 'package:intl/intl.dart';
+// import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,87 +39,77 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextFormField(
-              decoration: InputDecoration(labelText: 'First name'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter the tenant\'s  first name';
-                }
-              },
-              onSaved: (val) => setState(() => _user.firstName = val),
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Last name'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter the tenant\'s last name';
-                }
-              },
-              onSaved: (val) => setState(() => _user.firstName = val),
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Make / Model'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter the tenant\'s make and model';
-                }
-              },
-              onSaved: (val) => setState(() => _user.firstName = val),
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'License Plate'),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter the tenant\'s license plate';
-                }
-              },
-              onSaved: (val) => setState(() => _user.firstName = val),
-            ),
-            Text('Fee Paid Through (${format.pattern})'),
-            DateTimeField(
-              format: 'MM/DD/YYYY',
-              onShowPicker: (context, currentValue) async {
-                final date = await showDatePicker(
-                    context: context,
-                    firstDate: DateTime(1900),
-                    initialDate: currentValue ?? DateTime.now(),
-                    lastDate: DateTime(2100));
-                if (date != null) {
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime:
-                        TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                  );
-                  return DateTimeField.combine(date, time);
-                } else {
-                  return currentValue;
-                }
-              },
-            ),
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-              child: RaisedButton(
-                onPressed: () {
-                  final form = _formKey.currentState;
-                  if (form.validate()) {
-                    form.save();
-                    _user.save();
-                    _showDialog(context);
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildTextFormField('First name', 'Please enter the tenant\'s  first name'),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Last name'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter the tenant\'s last name';
                   }
+                  return null;
                 },
-                child: Text('Save'),
+                onSaved: (val) => setState(() => _user.lastName = val),
               ),
-            ),
-          ],
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Make / Model'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter the tenant\'s make and model';
+                  }
+                  return null;
+                },
+                onSaved: (val) => setState(() => _user.makeModel = val),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'License Plate'),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter the tenant\'s license plate';
+                  }
+                  return null;
+                },
+                onSaved: (val) => setState(() => _user.licensePlate = val),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 16.0),
+                child: RaisedButton(
+                  onPressed: () {
+                    final form = _formKey.currentState;
+                    if (form.validate()) {
+                      form.save();
+                      _user.save();
+                      _showDialog(context);
+                    }
+                  },
+                  child: Text('Save'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  TextFormField buildTextFormField(String labelText, String emptySign) {
+    return TextFormField(
+              decoration: InputDecoration(labelText: labelText),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return emptySign;
+                }
+                _user.firstName = value;
+                return null;
+              },
+              onSaved: (val) => setState(() => _user.firstName = val),
+            );
   }
 
   _showDialog(BuildContext context) {
@@ -131,22 +121,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class BasicDateField extends StatelessWidget {
-  final format = DateFormat("yyyy-MM-dd");
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Text('Basic date field (${format.pattern})'),
-      DateTimeField(
-        format: format,
-        onShowPicker: (context, currentValue) {
-          return showDatePicker(
-              context: context,
-              firstDate: DateTime(1900),
-              initialDate: currentValue ?? DateTime.now(),
-              lastDate: DateTime(2100));
-        },
-      ),
-    ]);
-  }
-}
+// class BasicDateField extends StatelessWidget {
+//   final format = DateFormat("yyyy-MM-dd");
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(children: <Widget>[
+//       Text('Basic date field (${format.pattern})'),
+//       DateTimeField(
+//         format: format,
+//         onShowPicker: (context, currentValue) {
+//           return showDatePicker(
+//               context: context,
+//               firstDate: DateTime(1900),
+//               initialDate: currentValue ?? DateTime.now(),
+//               lastDate: DateTime(2100));
+//         },
+//       ),
+//     ]);
+//   }
+// }
